@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Translator</title>
+    <script>
+        function showLoading() {
+            document.getElementById("loading").style.display = "block";
+        }
+    </script>
+</head>
+<body>
+    <h2>Upload Image for Text Extraction</h2>
+    <form action="/upload" method="POST" enctype="multipart/form-data" onsubmit="showLoading()">
+        <input type="file" name="image" accept="image/png, image/jpeg" required>
+        <button type="submit">Extract Text</button>
+    </form>
+
+    <div id="loading" style="display: none;">
+        <p>Translating...</p>
+    </div>
+
+    {% if extracted_text %}
+        <h3>Extracted Text (English):</h3>
+        <p>{{ extracted_text }}</p>
+
+        <h3>Translate to:</h3>
+        <form action="/translate" method="POST" onsubmit="showLoading()">
+            <input type="hidden" name="text" value="{{ extracted_text }}">
+            <select name="language">
+                <option value="hi">Hindi</option>
+                <option value="fr">French</option>
+                <option value="es">Spanish</option>
+            </select>
+            <button type="submit">Translate</button>
+        </form>
+    {% endif %}
+
+    {% if translated_text %}
+        <h3>Translated Text ({{ lang_name }}):</h3>
+        <p>{{ translated_text }}</p>
+    {% endif %}
+</body>
+</html>
