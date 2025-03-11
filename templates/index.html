@@ -3,43 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Translator</title>
+    <title>Image Text Extractor & Translator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #007bff;
+            color: white;
+            padding: 15px;
+            font-size: 24px;
+        }
+        .container {
+            width: 50%;
+            margin: auto;
+            padding: 20px;
+            background: white;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .loading {
+            display: none;
+            font-weight: bold;
+            color: #ff5733;
+            margin-top: 10px;
+        }
+        footer {
+            margin-top: 30px;
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            font-size: 14px;
+        }
+    </style>
     <script>
-        function showLoading() {
-            document.getElementById("loading").style.display = "block";
+        function showLoading(id) {
+            document.getElementById(id).style.display = "block";
         }
     </script>
 </head>
 <body>
-    <h2>Upload Image for Text Extraction</h2>
-    <form action="/upload" method="POST" enctype="multipart/form-data" onsubmit="showLoading()">
+
+<header>Image Text Extractor & Translator</header>
+
+<div class="container">
+    <h3>Upload an Image</h3>
+    <form action="/upload" method="POST" enctype="multipart/form-data" onsubmit="showLoading('loadingExtract')">
         <input type="file" name="image" accept="image/png, image/jpeg" required>
         <button type="submit">Extract Text</button>
     </form>
+    <div id="loadingExtract" class="loading">Extracting text...</div>
+</div>
 
-    <div id="loading" style="display: none;">
-        <p>Translating...</p>
-    </div>
+{% if extracted_text %}
+<div class="container">
+    <h3>Extracted Text (English)</h3>
+    <p>{{ extracted_text }}</p>
 
-    {% if extracted_text %}
-        <h3>Extracted Text (English):</h3>
-        <p>{{ extracted_text }}</p>
+    <h3>Translate to:</h3>
+    <form action="/translate" method="POST" onsubmit="showLoading('loadingTranslate')">
+        <input type="hidden" name="text" value="{{ extracted_text }}">
+        <select name="language">
+            <option value="hi">Hindi</option>
+            <option value="fr">French</option>
+            <option value="es">Spanish</option>
+        </select>
+        <button type="submit">Translate</button>
+    </form>
+    <div id="loadingTranslate" class="loading">Translating...</div>
+</div>
+{% endif %}
 
-        <h3>Translate to:</h3>
-        <form action="/translate" method="POST" onsubmit="showLoading()">
-            <input type="hidden" name="text" value="{{ extracted_text }}">
-            <select name="language">
-                <option value="hi">Hindi</option>
-                <option value="fr">French</option>
-                <option value="es">Spanish</option>
-            </select>
-            <button type="submit">Translate</button>
-        </form>
-    {% endif %}
+{% if translated_text %}
+<div class="container">
+    <h3>Translated Text ({{ lang_name }})</h3>
+    <p>{{ translated_text }}</p>
+</div>
+{% endif %}
 
-    {% if translated_text %}
-        <h3>Translated Text ({{ lang_name }}):</h3>
-        <p>{{ translated_text }}</p>
-    {% endif %}
+<footer>
+    <p>Project by: Student 1, Student 2, Student 3 | Mentor: Mentor Name</p>
+</footer>
+
 </body>
 </html>
