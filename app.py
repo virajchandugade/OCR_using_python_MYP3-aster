@@ -42,5 +42,4 @@ def translate_text():
 
     return render_template("index.html", extracted_text=text, translated_text=translated_text, lang_name=lang_name)
 
-if __name__ == "__main__":
-    app.run(debug=True)
+
